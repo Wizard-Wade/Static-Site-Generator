@@ -19,6 +19,30 @@ class TestTextNode(unittest.TestCase):
         node = Textnode("This is a text node", TextType.italic)
         node2 = Textnode("This is a text node", TextType.bold)
         self.assertNotEqual(node,node2)
+
+    def test_to_html(self):
+        node = Textnode("This is a text node", TextType.text)
+        html_node = text_node_to_html_node(node)
+        self.assertEqual(html_node.tag, None)
+        self.assertEqual(html_node.value, "This is a text node")
+    
+    def test_bold(self):
+        node = Textnode("This is bold", TextType.bold)
+        html_node = text_node_to_html_node(node)
+        self.assertEqual(html_node.tag, "b")
+        self.assertEqual(html_node.value, "This is bold")
+
+    def test_image(self):
+        node = Textnode("This is an image", TextType.image, "https://www.boot.dev")
+        html_node = text_node_to_html_node(node)
+        self.assertEqual(html_node.tag, "img")
+        self.assertEqual(html_node.value, "")
+        self.assertEqual(
+            html_node.props,
+            {"src": "https://www.boot.dev", "alt": "This is an image"},
+        )
+
+
         
 
 if __name__ == "__main__":
