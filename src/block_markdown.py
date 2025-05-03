@@ -1,12 +1,13 @@
 from enum import Enum
+import re
 
 class BlockType(Enum):
     PARAGRAPH = '""'
     HEADING = "#"
     CODE = "```"
     QUOTE = ">"
-    UNORDERED_LIST = "-"
-    ORDERED_LIST = "*. "
+    ULIST = "-"
+    OLIST = "*. "
 
 def markdown_to_blocks(markdown):
     blocks = markdown.split("\n\n")
@@ -18,7 +19,12 @@ def markdown_to_blocks(markdown):
     return filtered
 
 def block_to_block_type(block):
-    first_word, *mid, last_word = block.split()
+    if block.count(" ") > 0:
+        first_word, *mid, last_word = block.split()
+    else:
+        first_word = block
+        last_word = block
+
     if first_word.startswith(BlockType.HEADING.value):
         return BlockType.HEADING
     if first_word.startswith(BlockType.CODE.value) and last_word.endswith(BlockType.CODE.value):
@@ -26,11 +32,26 @@ def block_to_block_type(block):
     split_lines =  block.split("\n")
     if all(list(map(lambda x: x.startswith(BlockType.QUOTE.value), split_lines))):
         return BlockType.QUOTE 
-    if all(list(map(lambda x: x.startswith(BlockType.UNORDERED_LIST.value), split_lines))):
-        return BlockType.UNORDERED_LIST
+    if all(list(map(lambda x: x.startswith(BlockType.ULIST.value), split_lines))):
+        return BlockType.ULIST  
     for i in range(len(split_lines)):
         if not split_lines[i].startswith(f"{i+1}. "):
             break
         if i == len(split_lines) -1:
-            return BlockType.ORDERED_LIST
+            return BlockType.OLIST
     return BlockType.PARAGRAPH
+
+def block_strip_styling(block, block_type):
+    if block_type == BlockType.ULIST:
+        blocks = block_split_unordered_list(block)
+    elif block_type == BlockType.OLIST:
+        blocks = block_split_ordered_list(block)
+    else:
+        blocks = [block.strip(block_type.value)]
+    return list(map(lambda x: x.replace("\n", " "),blocks))
+
+def block_split_ordered_list(block):
+    return re.split(r"^(\d[.])",block).strip()
+
+def block_split_unordered_list(block):
+    return re.split(r"^(-)").strip()
