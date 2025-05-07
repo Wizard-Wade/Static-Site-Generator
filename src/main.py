@@ -1,8 +1,8 @@
 from textnode import *
+from copy_static_to_public import generate_public_assets
 
 def main():
-    node = TextNode("this is some anchor text", TextType.LINK, "https://www.boot.dev")
-    print(node)
+    generate_public_assets()
     
 
 main()
