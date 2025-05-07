@@ -33,8 +33,9 @@ def markdown_to_html_node(markdown):
         elif b_type == BlockType.QUOTE:
             tag = "blockquote"
         elif b_type == BlockType.HEADING:
-            hlevel = len(block.split(" ", 1)[1])
-            tag = f"H{hlevel}"
+            f1 = block.split(" ", 1)[1]
+            hlevel = len(block.split(" ", 1)[0])
+            tag = f"h{hlevel}"
         else:
             tag = "p"
         pnode = htmlnode.ParentNode(tag=tag, children=kids)
