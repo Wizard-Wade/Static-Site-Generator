@@ -47,11 +47,11 @@ def block_strip_styling(block, block_type):
     elif block_type == BlockType.OLIST:
         blocks = block_split_ordered_list(block)
     else:
-        blocks = [block.strip(block_type.value)]
+        blocks = [block.strip(block_type.value).strip()]
     return list(map(lambda x: x.replace("\n", " "),blocks))
 
 def block_split_ordered_list(block):
     return re.split(r"^(\d[.])",block).strip()
 
 def block_split_unordered_list(block):
-    return re.split(r"^(-)").strip()
+    return re.split(r"^(-)",block).strip()
