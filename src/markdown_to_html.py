@@ -19,6 +19,8 @@ def markdown_to_html_node(markdown):
         kids = []
         block_list = block_strip_styling(block, b_type)
         for sub_block in block_list:
+            if sub_block is "":
+                continue
             tnodes = inline_markdown.text_to_textnodes(sub_block)
             l_html = list(map(lambda x : textnode.text_node_to_html_node(x), tnodes))
             if b_type is BlockType.OLIST or b_type is BlockType.ULIST:
@@ -40,14 +42,15 @@ def markdown_to_html_node(markdown):
             tag = "p"
         pnode = htmlnode.ParentNode(tag=tag, children=kids)
         nodes.append(pnode)
-        print(nodes)
     return htmlnode.ParentNode("div", nodes)
 
-            
-
-        #convert block to textnodes
-
-def text_to_children(text):
-    #take string of text and return HTML node
-    pass
+def extract_title(markdown):
+    #find the header line
+    blocks = markdown_to_blocks(markdown)
+    
+    heading = next((sub_block for sub_block in blocks if sub_block.startswith(r"# ")), None)
+    if not heading:
+        raise Exception("Could not find h1 heading")
+    
+    return block_strip_styling(heading, BlockType.HEADING)[0]
   

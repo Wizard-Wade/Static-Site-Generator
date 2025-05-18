@@ -103,6 +103,27 @@ the **same** even with inline stuff
             "<div><pre><code>This is text that _should_ remain\nthe **same** even with inline stuff\n</code></pre></div>",
         )
 
+    def test_heading(self):
+        md = """
+# Hello
+
+this is normal text in that would be in a p block it should be ignored
+"""
+
+        heading = extract_title(md)
+        self.assertEqual(
+            heading,
+            "Hello",
+        )
+
+    def test_heading(self):
+        md = """
+## Hello
+
+this is normal text in that would be in a p block it should be ignored
+"""
+
+        self.assertRaises(Exception, extract_title, md)
 
 
 if __name__ == "__main__":

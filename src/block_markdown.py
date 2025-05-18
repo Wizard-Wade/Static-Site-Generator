@@ -46,12 +46,17 @@ def block_strip_styling(block, block_type):
         blocks = block_split_unordered_list(block)
     elif block_type == BlockType.OLIST:
         blocks = block_split_ordered_list(block)
+    elif block_type == BlockType.QUOTE:
+        blocks = block_split_blockquote(block)
     else:
         blocks = [block.strip(block_type.value).strip()]
     return list(map(lambda x: x.replace("\n", " "),blocks))
 
 def block_split_ordered_list(block):
-    return re.split(r"^(\d[.])",block).strip()
+    return list(map(lambda x : x.strip(), re.split(r"^\d[.]",block, 0, re.MULTILINE)))
 
 def block_split_unordered_list(block):
-    return re.split(r"^(-)",block).strip()
+    return list(map(lambda x : x.strip(), re.split(r"^-",block, 0, re.MULTILINE)))
+
+def block_split_blockquote(block):
+    return "".join(re.split(r"> ",block, 0, re.MULTILINE))
