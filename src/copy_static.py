@@ -5,16 +5,16 @@ import shutil
 #it should then copy all files and subdirectories nested files etc to the public folder.
 #recommended to log the path of each file copied so we can see what's happening as we run and debug.
 
-def delete_public_contents():
-    public_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),"..//public")
+def delete_folder_contents(folder):
+    public_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), f"..//{folder}")
     if os.path.exists(public_path):
         delete_dir_files_(public_path)
     
 def delete_dir_files_(dir_path):      
     shutil.rmtree(dir_path)
 
-def copy_static_contents():
-    public_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),"..//public")
+def copy_static_contents(folder):
+    public_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),f"..//{folder}")
     static_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),"..//static")
     copy_dir_files_recursive(static_path, public_path)  
     
@@ -32,6 +32,6 @@ def copy_dir_files_recursive(src_path, dest_path):
             copy_dir_files_recursive(s_fullpath, d_fullpath)
     
     
-def generate_public_assets():
-    delete_public_contents()
-    copy_static_contents()
+def generate_assets(destination_folder):
+    delete_folder_contents(destination_folder)
+    copy_static_contents(destination_folder)

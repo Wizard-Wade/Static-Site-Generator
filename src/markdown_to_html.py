@@ -19,7 +19,7 @@ def markdown_to_html_node(markdown):
         kids = []
         block_list = block_strip_styling(block, b_type)
         for sub_block in block_list:
-            if sub_block is "":
+            if sub_block == "":
                 continue
             tnodes = inline_markdown.text_to_textnodes(sub_block)
             l_html = list(map(lambda x : textnode.text_node_to_html_node(x), tnodes))

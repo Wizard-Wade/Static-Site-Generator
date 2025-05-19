@@ -1,10 +1,11 @@
 from textnode import *
-from copy_static_to_public import generate_public_assets
+from copy_static import generate_assets
 from Generate_page import generate_website, generate_page
+import sys
 
 def main():
-    generate_public_assets()
-    #generate_page("..//content//index.md", "..//templates//template.html", "..//public//index.html")
-    generate_website("..//content", "..//templates//template.html", "..//public")
+    basepath = "\\" + sys.argv[1] if sys.argv[1] is not None else "/"
+    generate_assets("docs")
+    generate_website(f"..//content", f"..//templates//template.html", f"..//docs", basepath)
 
 main()

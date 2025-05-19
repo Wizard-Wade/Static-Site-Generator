@@ -3,7 +3,7 @@ import shutil
 import os
 import pathlib
 
-def generate_website(dir_path_content, template_path, dest_dir_path):
+def generate_website(dir_path_content, template_path, dest_dir_path, basepath):
     if not os.path.exists(dir_path_content):
         dir_path_content = os.path.join(os.path.dirname(os.path.realpath(__file__)), dir_path_content)
         if not os.path.exists(dir_path_content):
@@ -19,10 +19,10 @@ def generate_website(dir_path_content, template_path, dest_dir_path):
         if not os.path.exists(template_path):
             raise Exception("Could not find template")
     
-    generate_pages_recursive(dir_path_content, template_path, dest_dir_path)
+    generate_pages_recursive(dir_path_content, template_path, dest_dir_path, basepath)
     
     
-def generate_pages_recursive(dir_path, template_path, dest_path):
+def generate_pages_recursive(dir_path, template_path, dest_path, basepath):
     if not os.path.exists(dest_path):
         os.mkdir(dest_path)
 
@@ -30,12 +30,12 @@ def generate_pages_recursive(dir_path, template_path, dest_path):
         s_fullpath = os.path.join(dir_path, name)
         d_fullpath = os.path.join(dest_path, name)
         if os.path.isfile(s_fullpath):
-            generate_page(s_fullpath, template_path,  pathlib.Path(d_fullpath).with_suffix(".html"))
+            generate_page(s_fullpath, template_path,  pathlib.Path(d_fullpath).with_suffix(".html"), basepath)
         else:
             os.mkdir(d_fullpath)
-            generate_pages_recursive(s_fullpath, template_path, d_fullpath)
+            generate_pages_recursive(s_fullpath, template_path, d_fullpath, basepath)
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path, basepath):
 
     if not os.path.exists(from_path):
         from_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), from_path)
@@ -61,7 +61,7 @@ def generate_page(from_path, template_path, dest_path):
 
     with open(template_path, 'r') as template_file:
         template = template_file.read()
-    webpage_html = template.replace(r"{{ Title }}", heading).replace(r"{{ Content }}", html)
+    webpage_html = template.replace(r"{{ Title }}", heading).replace(r"{{ Content }}", html).replace(r'href="/', f'href="{basepath}').replace(r'src="/', f'src="{basepath}')
 
     with open(dest_path, 'w') as webpage:
         webpage.write(webpage_html)
